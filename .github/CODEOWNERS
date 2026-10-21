@@ -1,0 +1,17 @@
+# Por qué: estos ficheros dan órdenes a la IA o deciden qué se considera seguro. Un cambio malicioso o descuidado
+# aquí afecta a todo lo que Copilot genere después, así que exigen revisión del responsable.
+# En el banco el propietario sería un equipo (p. ej. @org/appsec-team). Aquí es tu usuario porque estás solo.
+# El ruleset de main obliga a la revisión de code owners (ver README, "Simulación del repo del banco").
+
+# Configuración de la IA
+/AGENTS.md                  @HenrySanguna
+/.github/                   @HenrySanguna
+
+# Código de seguridad compartido y reglas que lo protegen
+/src/security/              @HenrySanguna
+/eslint.config.js           @HenrySanguna
+
+# Cadena de suministro
+/pnpm-workspace.yaml        @HenrySanguna
+/pnpm-lock.yaml             @HenrySanguna
+/package.json               @HenrySanguna

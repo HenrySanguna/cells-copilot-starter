@@ -1,0 +1,16 @@
+.DS_Store
+.history
+node_modules
+dist
+types
+coverage
+
+# Los secretos nunca entran en el repo: la exclusión de contenido de Copilot no se respeta en modo Agent,
+# así que lo único seguro es que el fichero no exista en el árbol que la IA puede leer.
+.env
+.env.*
+!.env.example
+
+# .vscode/ SÍ se versiona (a diferencia del scaffold): settings.json y extensions.json son parte de la configuración
+# compartida de Copilot del equipo. Solo se ignoran ficheros personales.
+.vscode/*.local.json

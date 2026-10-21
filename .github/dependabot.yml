@@ -1,0 +1,25 @@
+# Dependabot abre PRs de actualización. En un banco suele estar activo y es la fuente de muchos hallazgos de
+# dependencias: cada PR suya se trata con el agente dependency-auditor y la skill dependency-cve-fix.
+version: 2
+updates:
+  # "npm" es el ecosistema que Dependabot usa también para proyectos pnpm (lee pnpm-lock.yaml).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Coherente con minimumReleaseAge de pnpm-workspace.yaml: no proponer versiones con menos de 3 días.
+    cooldown:
+      default-days: 3
+    groups:
+      # Los parches se agrupan para no generar una PR por paquete; las majors van por separado y se revisan una a una.
+      patches:
+        update-types: [patch]
+    open-pull-requests-limit: 5
+
+  # Mantiene al día los SHA fijados en .github/workflows/.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3

@@ -1,0 +1,3 @@
+# Finales de línea LF en el repo para todos, coherente con .editorconfig. Sin esto, core.autocrlf en Windows
+# convierte a CRLF y los diffs (y los hashes que revisa CI en Linux) cambian sin que cambie el contenido.
+* text=auto eol=lf

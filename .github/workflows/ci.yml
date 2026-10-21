@@ -1,0 +1,42 @@
+# CI: las mismas comprobaciones que `pnpm check`. El ruleset de main exige que este job ("ci") pase antes de fusionar,
+# así que las reglas de AGENTS.md (vía ESLint) y los tests de ataque no dependen de que la IA o la persona se acuerden.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Mínimo privilegio: el token de este workflow solo puede leer el repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Acciones fijadas por SHA de commit y no por etiqueta: una etiqueta se puede mover a código malicioso,
+      # un SHA no. Dependabot (github-actions) propone las actualizaciones.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Toma la versión de pnpm del campo packageManager de package.json.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # --frozen-lockfile: si el lockfile no coincide con package.json o incumple la política de pnpm-workspace.yaml, falla.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm audit --prod

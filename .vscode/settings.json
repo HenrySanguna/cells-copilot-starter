@@ -1,0 +1,32 @@
+{
+  // Ajustes de workspace: se versionan para que todo el equipo use la misma configuración de Copilot.
+  // Prevalecen sobre tus ajustes de usuario solo dentro de este proyecto.
+
+  // Usa .github/copilot-instructions.md en chat y agentes.
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  // Lee AGENTS.md de la raíz. Solo la raíz: los AGENTS.md anidados son experimentales.
+  "chat.useAgentsMdFile": true,
+  // Adjunta automáticamente los .instructions.md cuyo applyTo coincide con los ficheros en uso.
+  "chat.includeApplyingInstructions": true,
+  // Incluye las instrucciones enlazadas desde otros ficheros de instrucciones (p. ej. AGENTS.md citado en copilot-instructions.md).
+  "chat.includeReferencedInstructions": true,
+
+  // Las reglas de seguridad de eslint.config.js se marcan en el editor mientras escribes y se corrigen al guardar si es posible.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Que la búsqueda (y el contexto que Copilot recoge con ella) no se llene de artefactos generados.
+  "search.exclude": {
+    "**/node_modules": true,
+    "dist": true,
+    "types": true,
+    "pnpm-lock.yaml": true
+  },
+
+  // Los ficheros de agentes y skills son Markdown con frontmatter.
+  "files.associations": {
+    "*.agent.md": "markdown",
+    "*.instructions.md": "markdown"
+  }
+}

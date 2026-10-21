@@ -1,0 +1,11 @@
+{
+  // VS Code propone instalarlas al abrir el proyecto. Ninguna es obligatoria para Copilot.
+  "recommendations": [
+    // Muestra en el editor las reglas de seguridad de eslint.config.js (sinks prohibidos, unsafeHTML).
+    "dbaeumer.vscode-eslint",
+    // Análisis de plantillas html`` de Lit: atributos, propiedades y bindings mal escritos.
+    "runem.lit-plugin",
+    // Ejecuta y depura los tests de Vitest desde la barra lateral.
+    "vitest.explorer"
+  ]
+}

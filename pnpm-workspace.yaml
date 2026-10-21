@@ -1,0 +1,22 @@
+# Configuración de pnpm. No es un monorepo: este fichero solo guarda los ajustes de cadena de suministro,
+# porque las versiones recientes de pnpm los leen de aquí y ya no de .npmrc.
+# Por qué importa en un banco: buena parte de los hallazgos front-end vienen de dependencias, no de código propio.
+
+# No instalar versiones publicadas hace menos de 3 días (4320 min). La mayoría de versiones secuestradas
+# se detectan y retiran en horas. Al fijarlo explícitamente la comprobación es estricta (falla en vez de saltársela).
+minimumReleaseAge: 4320
+
+# Falla si una versión nueva tiene menos garantías de publicación (provenance / trusted publisher) que una anterior.
+trustPolicy: no-downgrade
+
+# Las dependencias transitivas solo pueden venir del registro, nunca de URLs git ni tarballs sueltos.
+blockExoticSubdeps: true
+
+# Los scripts de instalación (postinstall, etc.) están bloqueados por defecto. Solo pueden ejecutarlos los
+# paquetes listados aquí, y cada uno se revisa antes de añadirlo. Hoy ninguno lo necesita.
+allowBuilds: {}
+
+# Aquí van las versiones parcheadas de dependencias transitivas vulnerables (ver skill dependency-cve-fix).
+# Cada entrada debe citar su ID de aviso en la PR. Ejemplo:
+#   overrides:
+#     "paquete-transitivo@<1.2.4": "1.2.4"   # GHSA-xxxx-xxxx-xxxx
