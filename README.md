@@ -198,6 +198,9 @@ Repositorio: `HenrySanguna/cells-copilot-starter` (público: con el plan gratuit
 | Secret scanning + push protection | Rechaza pushes con secretos conocidos | Igual |
 | Dependabot | Alertas, PRs de seguridad y actualizaciones semanales con 3 días de espera | Igual |
 | Merge | Solo squash; la rama se borra al fusionar | Política de merge del equipo |
+| Copilot code review | Regla `copilot_code_review` en el ruleset. Solo revisa si tu plan de Copilot incluye code review; si no, la regla no hace nada | Activado por el admin; segunda opinión, nunca aprueba |
+
+Para fusionar tus propias PR (no hay segunda persona que apruebe): `gh pr merge <n> --squash --admin`. Funciona porque el bypass del admin solo vale vía PR: un `git push` directo a `main` sigue rechazado (`GH013`).
 
 **Lo que no se puede simular sin Copilot Business/Enterprise:** instrucciones de organización, exclusión de contenido, lista de modelos aprobados, políticas de Copilot (agente, code review, terminal) y presupuesto de créditos.
 
