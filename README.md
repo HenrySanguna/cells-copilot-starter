@@ -1,4 +1,5 @@
 # cells-copilot-starter
+n[![ci](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml)
 
 Proyecto Open Cells (LitElement) de partida para **remediar vulnerabilidades front-end con GitHub Copilot** en un entorno bancario. Trae montada la configuración estable de Copilot (AGENTS.md, instrucciones por ruta, 6 custom agents, 13 skills), un flujo spec-driven ligero con un ejemplo resuelto, y un repositorio de GitHub que simula las protecciones de un repo corporativo.
 
