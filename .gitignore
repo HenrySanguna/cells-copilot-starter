@@ -11,6 +11,9 @@ coverage
 .env.*
 !.env.example
 
+# Cuerpo temporal de la PR que escribe el agente pr-preparer antes de llamar a `gh pr create --body-file`.
+.pr-body.md
+
 # .vscode/ SÍ se versiona (a diferencia del scaffold): settings.json y extensions.json son parte de la configuración
 # compartida de Copilot del equipo. Solo se ignoran ficheros personales.
 .vscode/*.local.json
