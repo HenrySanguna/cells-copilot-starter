@@ -148,11 +148,7 @@ El ejemplo ya está resuelto para que veas el resultado de cada fase:
 
 ### Hallazgo nuevo, paso a paso
 
-1. Chat en modo Agent → `/security-spec EXAMPLE-002 SAST Alta src/... descripción`. Revisa y guarda `spec.md`.
-2. Agente `security-planner` → "Planifica EXAMPLE-002". Revisa y guarda `plan.md` y `tasks.md`.
-3. Botón **Implementar el plan** → el implementer escribe el test, comprueba que falla y aplica el fix.
-4. Botón **Revisar cambios** → el reviewer emite veredicto.
-5. Botón **Preparar la PR** → copia la descripción, crea la rama, haz commit y abre la PR enlazando `specs/EXAMPLE-002/`.
+Ver [docs/flujo-copilot.md](docs/flujo-copilot.md): qué escribir en cada fase, qué revisas tú, cómo encadenar varios hallazgos y qué modelo usar en cada fase.
 
 ---
 
