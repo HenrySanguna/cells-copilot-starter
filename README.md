@@ -170,7 +170,6 @@ El ejemplo ya está resuelto para que veas el resultado de cada fase:
 2. Iniciar sesión en Copilot (en el banco, con la cuenta corporativa).
 3. Comprobar en el selector de herramientas del chat que existen los nombres usados en `tools` (`read`, `search`, `edit`, `execute`, `search/changes`, `todos`, `vscode/askQuestions`, `web/fetch`). Pueden cambiar entre versiones; si alguno no aparece, ajústalo en el `.agent.md`.
 4. Abrir el editor de personalizaciones del chat (*Chat: Configure Agents / Skills*) y verificar que aparecen los 6 agentes y las 13 skills sin errores.
-5. Opcional: tienes `github.copilot.nextEditSuggestions.enabled: false` en tus ajustes de usuario. Las *next edit suggestions* no gastan créditos; actívalas si te resultan útiles.
 
 ### Plan B: si el banco no permite subir la configuración de IA
 
