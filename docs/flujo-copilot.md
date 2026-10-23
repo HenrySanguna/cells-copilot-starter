@@ -72,17 +72,25 @@ git switch -c fix/<ID>-<resumen-corto> <rama base>
 | Plan | `security-planner` (`dependency-auditor` si es una dependencia) | `planifica specs/<ID>` | `plan.md` y `tasks.md` |
 | Fix | `security-implementer` | `implementa specs/<ID>` | el diff y que el test reproduzca el ataque |
 | Revisión | `security-reviewer` | `revisa specs/<ID>` | si hay bloqueos, vuelve al Fix |
-| PR | `pr-preparer` | `prepara la PR de specs/<ID>` | la descripción |
 
-Después:
+Con el veredicto **LISTO PARA PR**, haz commit y push tú. Añade solo la carpeta de este hallazgo y el código, para que no se cuelen los specs de otros hallazgos:
 
 ```powershell
+git add specs/<ID> src/
 git commit -m "fix(security): <ID> <qué se corrige>"
 git push -u origin HEAD
-gh pr create --base <rama base>
 ```
 
-Pega la descripción del `pr-preparer` en la PR. La aprueba siempre una persona.
+Después, cambia al agente `pr-preparer` y escribe `prepara la PR de specs/<ID>`. El agente:
+
+1. Comprueba que la rama no es `main` y que todo está commiteado y publicado. Si no, te pide que lo hagas.
+2. Redacta el título y la descripción con la plantilla de PR y te los muestra.
+3. Te pregunta la rama base y si crea la PR. Si la rama ya tiene una PR, te pregunta si sustituye su descripción.
+4. Con tu confirmación, ejecuta `gh pr create` (o `gh pr edit`) y te devuelve la URL. VS Code te pide además que apruebes el comando en la terminal.
+
+**Lee la descripción antes de confirmar**: es lo que verá quien revise la PR. El agente nunca hace merge ni aprueba; la PR la aprueba siempre una persona. Si respondes que no, te devuelve el texto para pegarlo a mano.
+
+Requisito: tener [GitHub CLI](https://cli.github.com/) instalado y con sesión iniciada (`gh auth login`).
 
 ## 4. Siguiente hallazgo
 

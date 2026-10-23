@@ -47,7 +47,7 @@ Los comentarios HTML como este no se renderizan y apenas gastan tokens.
 | 2. Plan y tareas | Agente `security-planner` (o `dependency-auditor` si es una dependencia) | `plan.md` y `tasks.md` |
 | 3. Implementación | Agente `security-implementer` + skill de remediación | Código, tests y casillas marcadas |
 | 4. Revisión | Agente `security-reviewer` | Informe con bloqueos |
-| 5. PR | Agente `pr-preparer` (skill `pr-security-summary`) | Descripción de PR |
+| 5. PR | Agente `pr-preparer` (skill `pr-security-summary`) | Descripción de PR y PR creada tras confirmación |
 
 ## Skills de remediación disponibles
 `lit-xss-remediation`, `open-redirect-fix`, `postmessage-hardening`, `sensitive-storage-fix`, `hardcoded-secret-response`,

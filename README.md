@@ -21,7 +21,7 @@ pnpm check        # lint + tests + build + audit (lo mismo que CI)
 3. En el chat, elige el agente `security-planner` en el selector de agentes y escribe `/` para ver las skills.
 4. Recorre el ejemplo [EXAMPLE-001](#recorrido-guiado-example-001).
 
-Requisitos: Node ≥ 22, pnpm ≥ 12, VS Code con GitHub Copilot (chat en modo Agent).
+Requisitos: Node ≥ 22, pnpm ≥ 12, VS Code con GitHub Copilot (chat en modo Agent) y [GitHub CLI](https://cli.github.com/) con sesión iniciada para que `pr-preparer` cree las PR.
 
 ---
 
@@ -94,9 +94,9 @@ Ninguno fija `model:`: el catálogo de modelos rota cada mes y el banco tendrá 
 | `dependency-auditor` | lectura + terminal | `pnpm audit`, `pnpm why`, directa vs transitiva | implementer |
 | `security-implementer` | lectura + edición + terminal | Test primero, fix mínimo, marca tareas | reviewer |
 | `security-reviewer` | lectura + cambios pendientes | Revisión con contexto limpio y criterios de bloqueo | pr-preparer |
-| `pr-preparer` | lectura + cambios pendientes | Descripción de PR con evidencias | — |
+| `pr-preparer` | lectura + cambios pendientes + edición y terminal limitadas | Descripción de PR con evidencias; crea o actualiza la PR con `gh` tras confirmación | — |
 
-**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer puede escribir.
+**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer escribe código; el pr-preparer solo escribe el cuerpo temporal de la PR y ejecuta `gh pr`, y pregunta antes.
 
 Los **handoffs** añaden un botón al final de la respuesta que pasa al agente siguiente con un prompt preparado. Todos usan `send: false`: la persona revisa antes de enviar.
 
@@ -131,7 +131,7 @@ Formato: una carpeta por skill con `SKILL.md`; `name` igual a la carpeta (minús
 | 2. Plan | `security-planner` o `dependency-auditor` | `plan.md` y `tasks.md` |
 | 3. Implementación | `security-implementer` + skill | Código, tests, casillas marcadas |
 | 4. Revisión | `security-reviewer` | Informe con veredicto |
-| 5. PR | `pr-preparer` | Descripción de PR; **aprueba una persona** |
+| 5. PR | `pr-preparer` | Descripción y creación de la PR tras confirmación; **aprueba una persona** |
 
 **Por qué este flujo y no Spec Kit:** cada hallazgo es un cambio pequeño y Spec Kit genera demasiados artefactos; además no hace falta instalar Python/uv, y deja en git el rastro spec → plan → tareas → código que pide una auditoría. El coste: las plantillas las mantienes tú y no hay comando de coherencia automático; lo cubre `security-reviewer`.
 
@@ -208,7 +208,7 @@ git switch -c fix/EXAMPLE-002-xss-account-alias
 # ... flujo SDD ...
 git commit -m "fix(security): EXAMPLE-002 sanitize account alias"
 git push -u origin HEAD
-gh pr create --fill
+# agente pr-preparer → "prepara la PR de specs/EXAMPLE-002": crea la PR con la descripción completa
 ```
 
 ---
