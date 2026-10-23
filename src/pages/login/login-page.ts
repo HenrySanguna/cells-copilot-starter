@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit';
 import { PageController } from '@open-cells/page-controller';
 import { customElement, state } from 'lit/decorators.js';
+import { safeRedirectPath } from '../../security/safe-url.js';
 
 interface SessionMessage {
   type: 'session';
@@ -18,14 +19,35 @@ export class LoginPage extends LitElement {
 
   private readonly params = new URLSearchParams(window.location.search);
 
+  resolveRedirectTarget(value: string | undefined): string | undefined {
+    if (!value) {
+      return undefined;
+    }
+
+    const redirectPath = safeRedirectPath(value, window.location.origin);
+    if (!redirectPath) {
+      return undefined;
+    }
+
+    return redirectPath === '/' ? '/' : redirectPath;
+  }
+
   private readonly onMessage = (event: MessageEvent<SessionMessage>) => {
     if (event.data?.type !== 'session') {
       return;
     }
-    this.storeSession(event.data.token);
-    if (event.data.returnUrl) {
-      window.location.href = event.data.returnUrl;
+
+    if (event.origin && event.origin !== window.location.origin) {
+      return;
     }
+
+    this.storeSession(event.data.token);
+    const redirectPath = this.resolveRedirectTarget(event.data.returnUrl);
+    if (redirectPath) {
+      window.location.assign(redirectPath);
+      return;
+    }
+    this.pageController.navigate('home');
   };
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
@@ -58,8 +80,9 @@ export class LoginPage extends LitElement {
     this.storeSession(token);
 
     const returnUrl = this.params.get('returnUrl');
-    if (returnUrl) {
-      window.location.href = returnUrl;
+    const redirectPath = this.resolveRedirectTarget(returnUrl ?? undefined);
+    if (redirectPath) {
+      window.location.assign(redirectPath);
       return;
     }
     this.pageController.navigate('home');
