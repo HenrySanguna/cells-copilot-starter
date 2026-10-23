@@ -1,5 +1,7 @@
 # cells-copilot-starter
 
+[![ci](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml)
+
 Proyecto Open Cells (LitElement) de partida para **remediar vulnerabilidades front-end con GitHub Copilot** en un entorno bancario. Trae montada la configuración estable de Copilot (AGENTS.md, instrucciones por ruta, 6 custom agents, 13 skills), un flujo spec-driven ligero con un ejemplo resuelto, y un repositorio de GitHub que simula las protecciones de un repo corporativo.
 
 Todo lo experimental o lo que un banco suele bloquear se ha dejado fuera a propósito (ver [Qué no incluye](#qué-no-incluye-y-por-qué)).
@@ -19,7 +21,7 @@ pnpm check        # lint + tests + build + audit (lo mismo que CI)
 3. En el chat, elige el agente `security-planner` en el selector de agentes y escribe `/` para ver las skills.
 4. Recorre el ejemplo [EXAMPLE-001](#recorrido-guiado-example-001).
 
-Requisitos: Node ≥ 22, pnpm ≥ 12, VS Code con GitHub Copilot (chat en modo Agent).
+Requisitos: Node ≥ 22, pnpm ≥ 12, VS Code con GitHub Copilot (chat en modo Agent) y [GitHub CLI](https://cli.github.com/) con sesión iniciada para que `pr-preparer` cree las PR.
 
 ---
 
@@ -92,9 +94,9 @@ Ninguno fija `model:`: el catálogo de modelos rota cada mes y el banco tendrá 
 | `dependency-auditor` | lectura + terminal | `pnpm audit`, `pnpm why`, directa vs transitiva | implementer |
 | `security-implementer` | lectura + edición + terminal | Test primero, fix mínimo, marca tareas | reviewer |
 | `security-reviewer` | lectura + cambios pendientes | Revisión con contexto limpio y criterios de bloqueo | pr-preparer |
-| `pr-preparer` | lectura + cambios pendientes | Descripción de PR con evidencias | — |
+| `pr-preparer` | lectura + cambios pendientes + edición y terminal limitadas | Descripción de PR con evidencias; crea o actualiza la PR con `gh` tras confirmación | — |
 
-**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer puede escribir.
+**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer escribe código; el pr-preparer solo escribe el cuerpo temporal de la PR y ejecuta `gh pr`, y pregunta antes.
 
 Los **handoffs** añaden un botón al final de la respuesta que pasa al agente siguiente con un prompt preparado. Todos usan `send: false`: la persona revisa antes de enviar.
 
@@ -129,7 +131,7 @@ Formato: una carpeta por skill con `SKILL.md`; `name` igual a la carpeta (minús
 | 2. Plan | `security-planner` o `dependency-auditor` | `plan.md` y `tasks.md` |
 | 3. Implementación | `security-implementer` + skill | Código, tests, casillas marcadas |
 | 4. Revisión | `security-reviewer` | Informe con veredicto |
-| 5. PR | `pr-preparer` | Descripción de PR; **aprueba una persona** |
+| 5. PR | `pr-preparer` | Descripción y creación de la PR tras confirmación; **aprueba una persona** |
 
 **Por qué este flujo y no Spec Kit:** cada hallazgo es un cambio pequeño y Spec Kit genera demasiados artefactos; además no hace falta instalar Python/uv, y deja en git el rastro spec → plan → tareas → código que pide una auditoría. El coste: las plantillas las mantienes tú y no hay comando de coherencia automático; lo cubre `security-reviewer`.
 
@@ -146,11 +148,7 @@ El ejemplo ya está resuelto para que veas el resultado de cada fase:
 
 ### Hallazgo nuevo, paso a paso
 
-1. Chat en modo Agent → `/security-spec EXAMPLE-002 SAST Alta src/... descripción`. Revisa y guarda `spec.md`.
-2. Agente `security-planner` → "Planifica EXAMPLE-002". Revisa y guarda `plan.md` y `tasks.md`.
-3. Botón **Implementar el plan** → el implementer escribe el test, comprueba que falla y aplica el fix.
-4. Botón **Revisar cambios** → el reviewer emite veredicto.
-5. Botón **Preparar la PR** → copia la descripción, crea la rama, haz commit y abre la PR enlazando `specs/EXAMPLE-002/`.
+Ver [docs/flujo-copilot.md](docs/flujo-copilot.md): qué escribir en cada fase, qué revisas tú, cómo encadenar varios hallazgos y qué modelo usar en cada fase.
 
 ---
 
@@ -168,7 +166,6 @@ El ejemplo ya está resuelto para que veas el resultado de cada fase:
 2. Iniciar sesión en Copilot (en el banco, con la cuenta corporativa).
 3. Comprobar en el selector de herramientas del chat que existen los nombres usados en `tools` (`read`, `search`, `edit`, `execute`, `search/changes`, `todos`, `vscode/askQuestions`, `web/fetch`). Pueden cambiar entre versiones; si alguno no aparece, ajústalo en el `.agent.md`.
 4. Abrir el editor de personalizaciones del chat (*Chat: Configure Agents / Skills*) y verificar que aparecen los 6 agentes y las 13 skills sin errores.
-5. Opcional: tienes `github.copilot.nextEditSuggestions.enabled: false` en tus ajustes de usuario. Las *next edit suggestions* no gastan créditos; actívalas si te resultan útiles.
 
 ### Plan B: si el banco no permite subir la configuración de IA
 
@@ -196,6 +193,9 @@ Repositorio: `HenrySanguna/cells-copilot-starter` (público: con el plan gratuit
 | Secret scanning + push protection | Rechaza pushes con secretos conocidos | Igual |
 | Dependabot | Alertas, PRs de seguridad y actualizaciones semanales con 3 días de espera | Igual |
 | Merge | Solo squash; la rama se borra al fusionar | Política de merge del equipo |
+| Copilot code review | Regla `copilot_code_review` en el ruleset. Solo revisa si tu plan de Copilot incluye code review; si no, la regla no hace nada | Activado por el admin; segunda opinión, nunca aprueba |
+
+Para fusionar tus propias PR (no hay segunda persona que apruebe): `gh pr merge <n> --squash --admin`. Funciona porque el bypass del admin solo vale vía PR: un `git push` directo a `main` sigue rechazado (`GH013`).
 
 **Lo que no se puede simular sin Copilot Business/Enterprise:** instrucciones de organización, exclusión de contenido, lista de modelos aprobados, políticas de Copilot (agente, code review, terminal) y presupuesto de créditos.
 
@@ -208,7 +208,7 @@ git switch -c fix/EXAMPLE-002-xss-account-alias
 # ... flujo SDD ...
 git commit -m "fix(security): EXAMPLE-002 sanitize account alias"
 git push -u origin HEAD
-gh pr create --fill
+# agente pr-preparer → "prepara la PR de specs/EXAMPLE-002": crea la PR con la descripción completa
 ```
 
 ---
