@@ -1,5 +1,7 @@
 # cells-copilot-starter
 
+[![ci](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/HenrySanguna/cells-copilot-starter/actions/workflows/ci.yml)
+
 Proyecto Open Cells (LitElement) de partida para **remediar vulnerabilidades front-end con GitHub Copilot** en un entorno bancario. Trae montada la configuración estable de Copilot (AGENTS.md, instrucciones por ruta, 6 custom agents, 13 skills), un flujo spec-driven ligero con un ejemplo resuelto, y un repositorio de GitHub que simula las protecciones de un repo corporativo.
 
 Todo lo experimental o lo que un banco suele bloquear se ha dejado fuera a propósito (ver [Qué no incluye](#qué-no-incluye-y-por-qué)).
@@ -168,7 +170,6 @@ El ejemplo ya está resuelto para que veas el resultado de cada fase:
 2. Iniciar sesión en Copilot (en el banco, con la cuenta corporativa).
 3. Comprobar en el selector de herramientas del chat que existen los nombres usados en `tools` (`read`, `search`, `edit`, `execute`, `search/changes`, `todos`, `vscode/askQuestions`, `web/fetch`). Pueden cambiar entre versiones; si alguno no aparece, ajústalo en el `.agent.md`.
 4. Abrir el editor de personalizaciones del chat (*Chat: Configure Agents / Skills*) y verificar que aparecen los 6 agentes y las 13 skills sin errores.
-5. Opcional: tienes `github.copilot.nextEditSuggestions.enabled: false` en tus ajustes de usuario. Las *next edit suggestions* no gastan créditos; actívalas si te resultan útiles.
 
 ### Plan B: si el banco no permite subir la configuración de IA
 
@@ -196,6 +197,9 @@ Repositorio: `HenrySanguna/cells-copilot-starter` (público: con el plan gratuit
 | Secret scanning + push protection | Rechaza pushes con secretos conocidos | Igual |
 | Dependabot | Alertas, PRs de seguridad y actualizaciones semanales con 3 días de espera | Igual |
 | Merge | Solo squash; la rama se borra al fusionar | Política de merge del equipo |
+| Copilot code review | Regla `copilot_code_review` en el ruleset. Solo revisa si tu plan de Copilot incluye code review; si no, la regla no hace nada | Activado por el admin; segunda opinión, nunca aprueba |
+
+Para fusionar tus propias PR (no hay segunda persona que apruebe): `gh pr merge <n> --squash --admin`. Funciona porque el bypass del admin solo vale vía PR: un `git push` directo a `main` sigue rechazado (`GH013`).
 
 **Lo que no se puede simular sin Copilot Business/Enterprise:** instrucciones de organización, exclusión de contenido, lista de modelos aprobados, políticas de Copilot (agente, code review, terminal) y presupuesto de créditos.
 
