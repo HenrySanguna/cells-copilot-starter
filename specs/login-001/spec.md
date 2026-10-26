@@ -26,6 +26,8 @@
 ## 4. Fuera de alcance
 - Cambios en el backend o en la API de login.
 - Revisión de otras redirecciones del repositorio distintas a la pantalla de login.
+- Validación del origen de los mensajes (`event.origin`) en el listener de `postMessage`: pertenece al hallazgo de postMessage. Este hallazgo solo valida el destino de la redirección.
+- Cambios en `src/security/`: `safeRedirectPath()` ya cubre los payloads de este spec.
 
 ## 5. Referencias
 - CWE: CWE-601

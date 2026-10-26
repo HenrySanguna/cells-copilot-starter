@@ -29,20 +29,12 @@ export function safeUrl(value: unknown, base: string = currentOrigin()): string 
  */
 export function safeRedirectPath(value: unknown, base: string = currentOrigin()): string | undefined {
   if (typeof value !== 'string' || value.trim() === '') return undefined;
-  const candidate = value.trim();
-
-  if (candidate.includes('\\') || candidate.startsWith('//')) {
-    return undefined;
-  }
-
   try {
     const origin = new URL(base).origin;
-    const url = new URL(candidate, origin);
-    if (url.origin !== origin) {
-      return undefined;
-    }
-
-    return `${url.pathname}${url.search}${url.hash}`;
+    // '//evil.com' y '/\evil.com' son rutas "relativas" que el navegador resuelve a otro dominio: la comparación
+    // de origen tras parsear las descarta.
+    const url = new URL(value.trim(), origin);
+    return url.origin === origin ? `${url.pathname}${url.search}${url.hash}` : undefined;
   } catch {
     return undefined;
   }

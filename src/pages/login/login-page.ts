@@ -19,36 +19,20 @@ export class LoginPage extends LitElement {
 
   private readonly params = new URLSearchParams(window.location.search);
 
-  resolveRedirectTarget(value: string | undefined): string | undefined {
-    if (!value) {
-      return undefined;
-    }
-
-    const redirectPath = safeRedirectPath(value, window.location.origin);
-    if (!redirectPath) {
-      return undefined;
-    }
-
-    return redirectPath === '/' ? '/' : redirectPath;
-  }
-
   private readonly onMessage = (event: MessageEvent<SessionMessage>) => {
     if (event.data?.type !== 'session') {
       return;
     }
-
-    if (event.origin && event.origin !== window.location.origin) {
-      return;
-    }
-
     this.storeSession(event.data.token);
-    const redirectPath = this.resolveRedirectTarget(event.data.returnUrl);
+    const redirectPath = safeRedirectPath(event.data.returnUrl);
     if (redirectPath) {
-      window.location.assign(redirectPath);
-      return;
+      this.redirectTo(redirectPath);
     }
-    this.pageController.navigate('home');
   };
+
+  redirectTo(path: string): void {
+    window.location.assign(path);
+  }
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this;
@@ -79,10 +63,9 @@ export class LoginPage extends LitElement {
     const { token } = (await response.json()) as { token: string };
     this.storeSession(token);
 
-    const returnUrl = this.params.get('returnUrl');
-    const redirectPath = this.resolveRedirectTarget(returnUrl ?? undefined);
+    const redirectPath = safeRedirectPath(this.params.get('returnUrl'));
     if (redirectPath) {
-      window.location.assign(redirectPath);
+      this.redirectTo(redirectPath);
       return;
     }
     this.pageController.navigate('home');
