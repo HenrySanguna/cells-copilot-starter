@@ -43,12 +43,14 @@ Para cada problema indica: fichero, línea, severidad, vector y fix sugerido.
 - Test ausente, test que no usa el payload del hallazgo o que comprueba strings en vez del DOM.
 - Test que no pasa por la interfaz pública: llama a métodos internos con casts (`as unknown as`) en vez de disparar el flujo real (submit, click, `MessageEvent`).
 - Tests del hallazgo que no pasan al ejecutarlos, o T1 sin la evidencia RED (nombres de los tests que fallaban antes del fix).
-- Criterios de aceptación del spec sin cubrir o sin marcar, o tareas sin marcar.
+- Criterios de aceptación del spec sin cubrir o sin marcar, o tareas sin marcar. No cuentan las tareas de revisión con
+  security-reviewer: las marca una persona con tu veredicto, así que siguen sin marcar mientras revisas.
 - Secretos, tokens o datos personales en código, specs o tests.
 
 ## Hallazgos derivados
 Lo que encuentres fuera del alcance del hallazgo (en el diff o en los ficheros que lees) no bloquea esta PR. Lístalo en una tabla
 para que no se pierda: tipo, fichero:línea y símbolo, vector, severidad propuesta y skill de remediación sugerida.
+Nunca aparecen en el motivo del veredicto: BLOQUEA solo cita puntos de "Bloquea si encuentras".
 
 Termina con:
 - Los comandos que ejecutaste y su resultado resumido.
