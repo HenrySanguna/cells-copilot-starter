@@ -15,7 +15,7 @@ Tiene execute pero no edit: puede inspeccionar el árbol, no cambiarlo.
 web/fetch sirve para leer el aviso (GitHub Advisory, changelog). Quítalo si el banco no permite acceso web al agente.
 -->
 - Lee AGENTS.md, `.github/instructions/deps.instructions.md` y el aviso (ID CVE/GHSA).
-- Ejecuta solo comandos de lectura: `pnpm audit --prod`, `pnpm audit --prod --json`, `pnpm why <paquete>`, `pnpm outdated <paquete>`.
+- Ejecuta solo comandos de lectura: `pnpm audit --prod`, `pnpm audit --prod --json`, `pnpm audit:all` (dependencias de desarrollo), `pnpm why <paquete>`, `pnpm outdated <paquete>`.
 - Nunca ejecutes `pnpm install`, `pnpm add`, `pnpm update` ni nada que modifique ficheros.
 - Determina: paquete, rango vulnerable, versión parcheada mínima, si es directa o transitiva y quién la arrastra.
 - Revisa el changelog entre la versión actual y la parcheada en busca de breaking changes.

@@ -27,3 +27,5 @@ Por qué esta plantilla: la PR es la evidencia de auditoría de cada remediació
 ## Riesgo de regresión
 
 ## Fuera de alcance / seguimiento
+<!-- Incluye la tabla "Hallazgos derivados" del revisor: tipo, fichero:línea y símbolo, vector, severidad propuesta, skill e issue si se abrió. -->
+

@@ -10,10 +10,12 @@ La description es lo más importante de una skill: es lo único que el agente ve
 Genera `specs/<ID>/spec.md` copiando la estructura de `specs/_template/spec.md`:
 
 1. **Hallazgo**: ID, herramienta de origen, severidad, fichero/componente, fecha.
-2. **Vector**: fuente de datos no confiable → sink → impacto. Con fichero:línea si se conoce.
+2. **Vector**: fuente de datos no confiable → sink → impacto. Con fichero:línea y el símbolo (método, propiedad), porque las líneas cambian con el fix.
 3. **Criterios de aceptación**:
    - Payloads que deben quedar neutralizados (mínimo los de `.github/skills/lit-xss-remediation/payloads.md` que apliquen).
    - Comportamiento funcional que NO debe cambiar.
+   - Evidencia: déjalo tal cual viene en la plantilla; es igual para todos los hallazgos.
+   - Si es una dependencia: en lugar de payloads, que el aviso ya no aparezca en `pnpm audit --prod` (`pnpm audit:all` si es de desarrollo) y la versión parcheada mínima.
 4. **Fuera de alcance**: lo que no se toca en este hallazgo. Si hay otros hallazgos que tocan el mismo fichero o el mismo flujo, nómbralos con su ID y di qué parte les corresponde (p. ej. "Validar `event.origin` del listener: LOGIN-002").
 5. **Referencias**: CWE, OWASP, aviso CVE/GHSA si aplica.
 
