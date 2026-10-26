@@ -9,7 +9,7 @@
 |---|---|---|
 | src/pages/login/login-page.ts | Validar los dos destinos con `safeRedirectPath()`; la navegación pasa por `redirectTo()` para poder comprobarla en los tests. | §3 "Payloads neutralizados" (los cuatro) y §3 "Comportamiento funcional que no cambia" (rutas internas válidas, fallback a `home`). |
 | src/pages/login/login-page.test.ts | Tests por el flujo real (envío del formulario y evento `message`) con los payloads del spec y con destinos internos legítimos. | §3 "Payloads neutralizados" y §3 "Comportamiento funcional que no cambia": son la evidencia de ambos. |
-| vitest.config.ts | `server.deps.inline` para `@open-cells/page-controller` y `@open-cells/core`: sin ello `login-page.test.ts` no carga en CI (ver Dependencias externas). Solo afecta a los tests; no cambia dependencias, lockfile ni build. | Ninguno de forma directa: es necesario para que los tests que evidencian los dos criterios de §3 se ejecuten en CI. |
+| vitest.config.ts | `server.deps.inline` para `@open-cells/page-controller` y `@open-cells/core`: sin ello `login-page.test.ts` no carga en CI (ver Dependencias externas). Solo afecta a los tests; no cambia dependencias, lockfile ni build. | §3 "Evidencia" (soporte de evidencia). Sin ella, en CI: `Cannot find module '.../@open-cells/core/src/bridge' imported from .../src/index.js`. |
 
 ## Alternativas descartadas
 - Validar con `startsWith('/')` o `includes('evil')`: insuficiente para `//evil.example`, `/\evil.example` y `javascript:`.
