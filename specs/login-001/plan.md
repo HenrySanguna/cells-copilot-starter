@@ -5,16 +5,20 @@
 - **Resumen del fix**: Pasar `returnUrl` (query) y `event.data.returnUrl` (postMessage) por `safeRedirectPath()` antes de redirigir. Si el destino no es seguro, el login navega a `home` y el mensaje no redirige. `safeRedirectPath()` ya rechaza orígenes externos, `javascript:`, `//evil.example` y `/\evil.example` (cubierto en `src/security/safe-url.test.ts`), así que no hace falta modificar `src/security/`.
 
 ## Ficheros afectados
-| Fichero | Cambio |
-|---|---|
-| src/pages/login/login-page.ts | Validar los dos destinos con `safeRedirectPath()`; la navegación pasa por `redirectTo()` para poder comprobarla en los tests. |
-| src/pages/login/login-page.test.ts | Tests por el flujo real (envío del formulario y evento `message`) con los payloads del spec y con destinos internos legítimos. |
-| vitest.config.ts | `server.deps.inline` para `@open-cells/page-controller` y `@open-cells/core`: sin ello `login-page.test.ts` no carga en CI (ver Dependencias externas). Solo afecta a los tests; no cambia dependencias, lockfile ni build. |
+| Fichero | Cambio | Criterio del spec que lo exige |
+|---|---|---|
+| src/pages/login/login-page.ts | Validar los dos destinos con `safeRedirectPath()`; la navegación pasa por `redirectTo()` para poder comprobarla en los tests. | §3 "Payloads neutralizados" (los cuatro) y §3 "Comportamiento funcional que no cambia" (rutas internas válidas, fallback a `home`). |
+| src/pages/login/login-page.test.ts | Tests por el flujo real (envío del formulario y evento `message`) con los payloads del spec y con destinos internos legítimos. | §3 "Payloads neutralizados" y §3 "Comportamiento funcional que no cambia": son la evidencia de ambos. |
+| vitest.config.ts | `server.deps.inline` para `@open-cells/page-controller` y `@open-cells/core`: sin ello `login-page.test.ts` no carga en CI (ver Dependencias externas). Solo afecta a los tests; no cambia dependencias, lockfile ni build. | Ninguno de forma directa: es necesario para que los tests que evidencian los dos criterios de §3 se ejecuten en CI. |
 
 ## Alternativas descartadas
 - Validar con `startsWith('/')` o `includes('evil')`: insuficiente para `//evil.example`, `/\evil.example` y `javascript:`.
 - Endurecer `safeRedirectPath()`: sus tests ya demuestran que rechaza todos los payloads del spec; cambiarla toca código compartido sin un fallo que lo justifique.
 - Construir URLs concatenando strings: no valida el dominio ni el esquema.
+
+## Fuera de alcance
+- Validación de `event.origin` en el listener de `message`: hallazgo de postMessage (spec §4).
+- `href` del enlace "Need help?" construido desde el parámetro `help` (`src/pages/login/login-page.ts:75,92`): vector distinto (URL dinámica sin `safeUrl()`), detectado por security-reviewer; va en su propio spec.
 
 ## Riesgos de regresión
 - Un `returnUrl` absoluto del mismo origen (`https://<origen>/ruta`) se convierte en ruta relativa: redirige al mismo sitio.
