@@ -13,7 +13,7 @@ Todo lo experimental o lo que un banco suele bloquear se ha dejado fuera a prop�
 ```powershell
 pnpm install --frozen-lockfile
 pnpm dev          # http://localhost:5173
-pnpm check        # lint + tests + build + audit (lo mismo que CI)
+pnpm check        # integridad de node_modules + lint + tests + build + audit --prod (los pasos de CI)
 ```
 
 1. Abre **esta carpeta** como raíz en VS Code (no la carpeta padre): si no, Copilot no encuentra `.github/agents` ni `.github/skills`.
@@ -42,7 +42,7 @@ cells-copilot-starter/
 │   ├── instructions/                 # 6 reglas por ruta (applyTo)
 │   ├── agents/                       # 6 custom agents
 │   ├── skills/                       # 13 skills
-│   ├── workflows/ci.yml              # CI = pnpm check
+│   ├── workflows/ci.yml              # CI = lint, tests, build y audit --prod
 │   ├── dependabot.yml
 │   ├── CODEOWNERS
 │   └── pull_request_template.md
@@ -93,10 +93,10 @@ Ninguno fija `model:`: el catálogo de modelos rota cada mes y el banco tendrá 
 | `security-planner` | lectura | Fuente → sink → impacto; propone `plan.md` y `tasks.md` | implementer |
 | `dependency-auditor` | lectura + terminal | `pnpm audit`, `pnpm why`, directa vs transitiva | implementer |
 | `security-implementer` | lectura + edición + terminal | Test primero, fix mínimo, marca tareas | reviewer |
-| `security-reviewer` | lectura + cambios pendientes | Revisión con contexto limpio y criterios de bloqueo | pr-preparer |
+| `security-reviewer` | lectura + cambios + terminal limitada | Revisión con contexto limpio y criterios de bloqueo; re-ejecuta los tests del hallazgo y lista hallazgos derivados | pr-preparer |
 | `pr-preparer` | lectura + cambios pendientes + edición y terminal limitadas | Descripción de PR con evidencias; crea o actualiza la PR con `gh` tras confirmación | — |
 
-**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer escribe código; el pr-preparer solo escribe el cuerpo temporal de la PR y ejecuta `gh pr`, y pregunta antes.
+**Por qué separar roles:** el planner no puede editar, así que no "arregla de paso"; el reviewer no escribió el código, así que no tiene el sesgo del autor. Solo el implementer escribe código; el pr-preparer solo escribe el cuerpo temporal de la PR y ejecuta `gh pr` (y `gh issue` para los hallazgos derivados), y pregunta antes. El reviewer solo ejecuta comandos que no modifican nada.
 
 Los **handoffs** añaden un botón al final de la respuesta que pasa al agente siguiente con un prompt preparado. Todos usan `send: false`: la persona revisa antes de enviar.
 
@@ -188,7 +188,7 @@ Repositorio: `HenrySanguna/cells-copilot-starter` (público: con el plan gratuit
 | Ruleset `main-protection` | PR obligatoria, revisión de CODEOWNERS, conversaciones resueltas, check `ci` verde, historial lineal, sin force push ni borrado | Protección de rama corporativa |
 | Bypass del ruleset | Solo rol admin y **solo vía PR** | En el banco no habría bypass: aprueba otra persona. Aquí existe porque no puedes aprobar tu propia PR |
 | CODEOWNERS | `AGENTS.md`, `.github/`, `src/security/`, ESLint y ficheros de pnpm | Equipo AppSec como propietario |
-| CI (`ci.yml`) | `pnpm check` en cada PR; acciones fijadas por SHA; token de solo lectura | Pipeline corporativo |
+| CI (`ci.yml`) | Lint, tests, build y `pnpm audit --prod` en cada PR (los pasos de `pnpm check`); acciones fijadas por SHA; token de solo lectura | Pipeline corporativo |
 | CodeQL (default setup) | Análisis de JS/TS en cada PR | SAST corporativo |
 | Secret scanning + push protection | Rechaza pushes con secretos conocidos | Igual |
 | Dependabot | Alertas, PRs de seguridad y actualizaciones semanales con 3 días de espera | Igual |

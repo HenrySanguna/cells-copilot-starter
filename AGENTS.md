@@ -19,8 +19,9 @@ Los comentarios HTML como este no se renderizan y apenas gastan tokens.
 - Lint: `pnpm lint`
 - Tests: `pnpm test`
 - Build: `pnpm build`
-- Auditoría de dependencias: `pnpm audit --prod`
-- Todo lo anterior (lo que corre CI): `pnpm check`
+- Auditoría de dependencias: `pnpm audit --prod` (las de desarrollo, informativa: `pnpm audit:all`)
+<!-- Por qué store status: un node_modules editado a mano hace pasar en local lo que falla en CI; pnpm lo detecta. -->
+- Todo lo anterior (los mismos pasos que CI) + integridad de `node_modules`: `pnpm check`
 
 ## Reglas no negociables
 <!-- Por qué se repiten aquí aunque ESLint ya las aplica: el lint detecta, pero estas reglas evitan que la IA proponga el código. -->
@@ -30,7 +31,10 @@ Los comentarios HTML como este no se renderizan y apenas gastan tokens.
 - No relajar `src/security/*` (allowlists, política de DOMPurify) sin un hallazgo que lo justifique y revisión de AppSec.
 - No modificar `src/security/*`, tampoco para endurecerlo, sin un test nuevo que falle con el código actual. Si los tests del wrapper ya cubren el payload, el fix va en el componente.
 - Cada fix se limita a su hallazgo: lo que pertenece a otro hallazgo (aunque esté en el mismo fichero) va en su propio spec.
+  Excepción: un cambio de configuración de tests o build sin efecto en el código de producción, necesario solo para que los tests del hallazgo se ejecuten, va en el mismo spec como "soporte de evidencia". Si toca código de producción, dependencias o el lockfile, va en su propio spec.
+- Lo que descubras de otro hallazgo no se arregla ni se pierde: se reporta en la tabla "Hallazgos derivados" (tipo, fichero:línea y símbolo, vector, severidad propuesta, skill).
 - No leer ni modificar: ficheros `.env*`, secretos, `.npmrc`, `.github/workflows/`. `pnpm-lock.yaml` y `pnpm-workspace.yaml` solo en tareas de dependencias.
+- Nunca edites `node_modules` ni el store de pnpm. Si una dependencia falla, documenta el error y pregunta.
   <!-- Por qué está escrito aquí: la exclusión de contenido que configura el admin NO se respeta en modo Agent del IDE. -->
 - Nunca copies el valor de un secreto encontrado en código a chats, specs, commits ni PR: cita solo fichero y línea.
 - Cada fix incluye un test que reproduce el ataque y demuestra que queda neutralizado.
@@ -48,7 +52,7 @@ Los comentarios HTML como este no se renderizan y apenas gastan tokens.
 | 1. Spec | Skill `security-spec` | `specs/<ID>/spec.md` |
 | 2. Plan y tareas | Agente `security-planner` (o `dependency-auditor` si es una dependencia) | `plan.md` y `tasks.md` |
 | 3. Implementación | Agente `security-implementer` + skill de remediación | Código, tests y casillas marcadas |
-| 4. Revisión | Agente `security-reviewer` | Informe con bloqueos |
+| 4. Revisión | Agente `security-reviewer` | Informe con bloqueos, tests re-ejecutados y hallazgos derivados |
 | 5. PR | Agente `pr-preparer` (skill `pr-security-summary`) | Descripción de PR y PR creada tras confirmación |
 
 ## Skills de remediación disponibles

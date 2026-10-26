@@ -73,20 +73,21 @@ git switch -c fix/<ID>-<resumen-corto> <rama base>
 | Fix | `security-implementer` | `implementa specs/<ID>` | el diff y que el test reproduzca el ataque |
 | Revisión | `security-reviewer` | `revisa specs/<ID>` | si hay bloqueos, vuelve al Fix |
 
-Con el veredicto **LISTO PARA PR**, haz commit y push tú. Añade solo la carpeta de este hallazgo y el código, para que no se cuelen los specs de otros hallazgos:
+Con el veredicto **LISTO PARA PR**, haz commit y push tú. Añade solo la carpeta de este hallazgo y los ficheros de "Ficheros afectados" de su `plan.md` (también los de soporte, como `vitest.config.ts`), para que no se cuelen los specs de otros hallazgos:
 
 ```powershell
-git add specs/<ID> src/
+git add specs/<ID> <ficheros del plan>
 git commit -m "fix(security): <ID> <qué se corrige>"
 git push -u origin HEAD
 ```
 
 Después, cambia al agente `pr-preparer` y escribe `prepara la PR de specs/<ID>`. El agente:
 
-1. Comprueba que la rama no es `main` y que todo está commiteado y publicado. Si no, te pide que lo hagas.
+1. Comprueba que la rama no es `main` y que lo versionado está commiteado y publicado. Si no, te pide que lo hagas. Los ficheros sin seguimiento (los specs de otros hallazgos) no lo bloquean: solo te avisa de que no entran en la PR.
 2. Redacta el título y la descripción con la plantilla de PR y te los muestra.
 3. Te pregunta la rama base y si crea la PR. Si la rama ya tiene una PR, te pregunta si sustituye su descripción.
-4. Con tu confirmación, ejecuta `gh pr create` (o `gh pr edit`) y te devuelve la URL. VS Code te pide además que apruebes el comando en la terminal.
+4. Con tu confirmación, ejecuta `gh pr create` (o `gh pr edit`) y te devuelve la URL. VS Code te pide además que apruebes el comando en la terminal: apruébalo solo esta vez. "Permitir siempre" escribe `chat.tools.terminal.autoApprove` en `.vscode/settings.json`, que está versionado.
+5. Si el revisor listó hallazgos derivados, te pregunta si abre un issue por cada uno, para que el siguiente triage los recoja.
 
 **Lee la descripción antes de confirmar**: es lo que verá quien revise la PR. El agente nunca hace merge ni aprueba; la PR la aprueba siempre una persona. Si respondes que no, te devuelve el texto para pegarlo a mano.
 
@@ -131,7 +132,9 @@ Copilot redacta; tú decides. Estas son las señales de que hay que pedir que lo
 
 ## Si el `security-reviewer` bloquea
 
-El reviewer termina con un veredicto: **BLOQUEA**, **CAMBIOS MENORES** o **LISTO PARA PR**.
+El reviewer re-ejecuta los tests del hallazgo y `pnpm lint` (te pide aprobar cada comando) y termina con un veredicto: **BLOQUEA**, **CAMBIOS MENORES** o **LISTO PARA PR**. Lo que encuentre de otros hallazgos va en su tabla "Hallazgos derivados" y no bloquea esta PR.
+
+Si el bloqueo es que los tests no llegan a ejecutarse por las herramientas (configuración de Vitest, una dependencia mal publicada), no es un fallo del fix: el plan añade la configuración necesaria como "soporte de evidencia" (criterio "Evidencia" del spec). Nunca se edita `node_modules`.
 
 1. **Primer bloqueo:** vuelve al `security-implementer` en el mismo chat, pasándole los bloqueos del informe ("corrige los bloqueos del reviewer"). Después, vuelve a pedir la revisión.
 2. **Segundo bloqueo por el mismo motivo:** no sigas iterando. El problema ya no está en el código, sino en el plan o en el spec:

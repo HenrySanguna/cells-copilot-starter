@@ -8,4 +8,4 @@ description: "Remediación de vulnerabilidades en dependencias (pnpm)"
 - No añadas dependencias nuevas sin justificarlo en el spec. No cambies el registro.
 - No relajes `minimumReleaseAge`, `trustPolicy`, `blockExoticSubdeps` ni `allowBuilds` para que una instalación pase: es justo lo que esas reglas deben frenar. Si bloquean, documenta el caso y pregunta.
 - No edites `pnpm-lock.yaml` a mano; lo regenera pnpm.
-- Verificación: `pnpm install --frozen-lockfile && pnpm audit --prod && pnpm test`.
+- Verificación: `pnpm install --frozen-lockfile && pnpm audit --prod && pnpm test`. Si el aviso es de una dependencia de desarrollo, `pnpm audit:all` en lugar de `pnpm audit --prod`.

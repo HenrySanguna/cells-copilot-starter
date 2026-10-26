@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "audit": "pnpm audit --prod",
-    "check": "pnpm lint && pnpm test && pnpm build && pnpm audit"
+    "audit:all": "pnpm audit",
+    "check": "pnpm store status && pnpm lint && pnpm test && pnpm build && pnpm audit --prod"
   },
   "dependencies": {
     "@open-cells/core": "^1.2.1",

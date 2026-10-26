@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit';
 import { PageController } from '@open-cells/page-controller';
 import { customElement, state } from 'lit/decorators.js';
+import { safeRedirectPath } from '../../security/safe-url.js';
 
 interface SessionMessage {
   type: 'session';
@@ -23,10 +24,15 @@ export class LoginPage extends LitElement {
       return;
     }
     this.storeSession(event.data.token);
-    if (event.data.returnUrl) {
-      window.location.href = event.data.returnUrl;
+    const redirectPath = safeRedirectPath(event.data.returnUrl);
+    if (redirectPath) {
+      this.redirectTo(redirectPath);
     }
   };
+
+  redirectTo(path: string): void {
+    window.location.assign(path);
+  }
 
   protected createRenderRoot(): HTMLElement | DocumentFragment {
     return this;
@@ -57,9 +63,9 @@ export class LoginPage extends LitElement {
     const { token } = (await response.json()) as { token: string };
     this.storeSession(token);
 
-    const returnUrl = this.params.get('returnUrl');
-    if (returnUrl) {
-      window.location.href = returnUrl;
+    const redirectPath = safeRedirectPath(this.params.get('returnUrl'));
+    if (redirectPath) {
+      this.redirectTo(redirectPath);
       return;
     }
     this.pageController.navigate('home');

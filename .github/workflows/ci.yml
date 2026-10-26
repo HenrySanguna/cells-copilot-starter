@@ -36,7 +36,6 @@ jobs:
 
       # --frozen-lockfile: si el lockfile no coincide con package.json o incumple la política de pnpm-workspace.yaml, falla.
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm test
-      - run: pnpm build
-      - run: pnpm audit --prod
+      # Los mismos pasos que en local (package.json → check): store status, lint, test, build y audit --prod.
+        # Un solo comando evita que CI y `pnpm check` se desincronicen.
+      - run: pnpm check
