@@ -6,4 +6,4 @@
     - `LOGIN-001: does not redirect to returnUrl <payload> received by postMessage` × 4 (mismos payloads)
 - [x] T2. Fix mínimo. Verificación: `pnpm lint && pnpm test`
 - [x] T3. Comprobación completa. Verificación: `pnpm check`
-- [ ] T4. Revisión con el agente security-reviewer (repetir tras las correcciones)
+- [x] T4. Revisión con el agente security-reviewer (repetir tras las correcciones)
