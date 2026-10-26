@@ -14,4 +14,11 @@
   - Evidencia GREEN: con `server.deps.inline` en `vitest.config.ts`, copia limpia → `4 passed (4)`, `43 passed`; `pnpm lint` y `pnpm build` OK.
   - Fuera de alcance: `pnpm audit` (todas las dependencias) falla por `happy-dom` (dev, vía `vitest`, GHSA-834v-8h66-3h79); `pnpm audit --prod` sin vulnerabilidades. Va en su propio spec.
 - [x] T6. Adaptar el spec al criterio estándar "Evidencia" de la plantilla (#7) y citarlo en la fila de soporte `vitest.config.ts` del plan; marcar los criterios de §3 con sus tests. Verificación: job `evidence` (`red-on-base`) en verde en la PR.
-- [ ] T7. Revisión repetida con el agente security-reviewer (con `execute`: re-ejecuta los tests del hallazgo y `pnpm lint`).
+- [x] T7. Revisión repetida con el agente security-reviewer (con `execute`: re-ejecuta los tests del hallazgo y `pnpm lint`).
+  - Evidencia: el revisor re-ejecutó `pnpm lint` (OK) y `pnpm vitest run src/pages/login/login-page.test.ts` (`11 passed`). Su único bloqueo era esta misma casilla sin marcar; sin bloqueos sobre el fix.
+  - Re-ejecutado al marcar (2026-10-26): `pnpm lint` exit 0; `11 passed (11)`.
+  - Hallazgo derivado (fuera de alcance, va en su propio spec):
+
+    | Tipo | Fichero:línea y símbolo | Vector | Severidad propuesta | Skill |
+    |---|---|---|---|---|
+    | XSS vía URL `javascript:` | `src/pages/login/login-page.ts:75,92` `LoginPage.render` (`href=${helpUrl}` sin `safeUrl()`) | parámetro `?help=` | Media/Alta | `lit-xss-remediation` |
