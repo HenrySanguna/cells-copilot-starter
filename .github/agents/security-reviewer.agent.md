@@ -21,8 +21,13 @@ Bloquea si encuentras:
 - unsafeHTML/unsafeSVG/innerHTML o cualquier sink de AGENTS.md sin sanear.
 - URL dinámica sin `safeUrl()` o redirección desde parámetro sin `safeRedirectPath()`.
 - Cambios en `src/security/` que amplíen allowlists sin justificación en el spec.
+- Cualquier cambio en `src/security/`, también para endurecer, sin un test nuevo que falle con el código anterior. Comprueba los tests existentes del wrapper: si ya cubrían el payload, el cambio sobra.
+- Ficheros del diff que no aparecen en "Ficheros afectados" de `plan.md`, o filas del plan que no citan un criterio del spec.
+- Código que pertenece a otro hallazgo (otro vector, aunque esté en el mismo fichero), o que el spec deja fuera de alcance.
 - Dependencias nuevas o versiones subidas sin justificar; reglas de `pnpm-workspace.yaml` o `eslint.config.js` relajadas.
 - Test ausente, test que no usa el payload del hallazgo o que comprueba strings en vez del DOM.
+- Test que no pasa por la interfaz pública: llama a métodos internos con casts (`as unknown as`) en vez de disparar el flujo real (submit, click, `MessageEvent`).
+- T1 de `tasks.md` sin la evidencia RED (tests que fallaban antes del fix).
 - Criterios de aceptación del spec sin cubrir o tareas sin marcar.
 - Secretos, tokens o datos personales en código, specs o tests.
 
