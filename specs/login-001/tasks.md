@@ -7,3 +7,7 @@
 - [x] T2. Fix mínimo. Verificación: `pnpm lint && pnpm test`
 - [x] T3. Comprobación completa. Verificación: `pnpm check`
 - [x] T4. Revisión con el agente security-reviewer (repetir tras las correcciones)
+- [x] T5. Que `login-page.test.ts` cargue en CI. Verificación: `pnpm install --frozen-lockfile` en copia limpia + `pnpm test`
+  - Evidencia RED: CI y copia limpia de `HEAD` → `Cannot find module '.../@open-cells/core/src/bridge' imported from .../src/index.js`, `1 failed | 3 passed (4)`. En local pasaba porque `node_modules/@open-cells/core/src/index.js` estaba editado a mano (`./bridge.js`).
+  - Evidencia GREEN: con `server.deps.inline` en `vitest.config.ts`, copia limpia → `4 passed (4)`, `43 passed`; `pnpm lint` y `pnpm build` OK.
+  - Fuera de alcance: `pnpm check` falla en `pnpm audit` por `happy-dom` (dev, vía `vitest`, GHSA-834v-8h66-3h79); `pnpm audit --prod` sin vulnerabilidades. Va en su propio spec.
