@@ -5,4 +5,4 @@
   - Evidencia RED (tests que fallan antes del fix y resumen de `pnpm test`):
 - [ ] T2. Fix mínimo. Verificación: `pnpm lint && pnpm test`
 - [ ] T3. Comprobación completa. Verificación: `pnpm check`
-- [ ] T4. Revisión con el agente security-reviewer
+- [ ] T4. Revisión con el agente security-reviewer (la marca una persona con el veredicto, los comandos ejecutados y los hallazgos derivados)
