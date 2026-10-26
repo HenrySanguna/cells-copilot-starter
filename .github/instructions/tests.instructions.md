@@ -9,4 +9,5 @@ description: "Convenciones de tests de seguridad"
 - Nombra el test con el ID del hallazgo: `it('EXAMPLE-001: ...')`.
 - Incluye al menos un test del comportamiento funcional que no debe cambiar (contenido legítimo sigue funcionando).
 - Comprueba el DOM renderizado (`shadowRoot.querySelector`), no el string de la plantilla.
+- Prueba por la interfaz pública: dispara el flujo real (submit, click, `MessageEvent`) y comprueba su efecto. No llames a métodos internos con casts (`as unknown as`).
 - El test debe fallar antes del fix. Si pasa sin el fix, no prueba nada.

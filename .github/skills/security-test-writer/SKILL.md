@@ -15,10 +15,23 @@ description: Escribe el test que reproduce un ataque front-end (XSS, URL, redire
    - XSS → no existe el nodo peligroso o no tiene atributos `on*`; el texto del payload aparece como `textContent`.
    - URL → el atributo no existe o no empieza por un esquema peligroso.
    - Storage → `localStorage.getItem(clave)` es `null` tras el flujo.
-4. Usa `it.each` con los payloads de `.github/skills/lit-xss-remediation/payloads.md`.
-5. Nombra cada test con el ID: `it('<ID>: ...')`.
-6. Añade un test del comportamiento legítimo que no debe cambiar.
-7. Ejecuta `pnpm test` y confirma que los tests de ataque **fallan** antes del fix. Anota el resultado en `tasks.md`.
-8. Limpia el DOM entre tests (`afterEach(() => document.body.replaceChildren())`).
+4. Para vectores sin DOM (redirección, `postMessage`), dispara el flujo real por la interfaz pública y comprueba el efecto:
+   - Redirección → si el componente no tiene un método de navegación, el fix añade uno pequeño (p. ej. `redirectTo(path)`) que el test espía. jsdom no permite espiar `window.location`.
+     ```ts
+     vi.spyOn(el, 'redirectTo').mockImplementation(() => undefined);
+     el.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true }));
+     await vi.waitFor(() => expect(el.pageController.navigate).toHaveBeenCalledWith('home'));
+     expect(el.redirectTo).not.toHaveBeenCalled();
+     ```
+   - `postMessage` → dispara un `MessageEvent` real, con `origin` cuando el vector depende de él:
+     ```ts
+     window.dispatchEvent(new MessageEvent('message', { data: payload, origin: 'https://evil.example' }));
+     ```
+   - Nunca llames a un método interno del componente con un cast (`as unknown as`) para probar la validación: así el test no demuestra que el flujo real la use.
+5. Usa `it.each` con los payloads de `.github/skills/lit-xss-remediation/payloads.md`.
+6. Nombra cada test con el ID: `it('<ID>: ...')`.
+7. Añade un test del comportamiento legítimo que no debe cambiar.
+8. Ejecuta `pnpm test` y confirma que los tests de ataque **fallan** antes del fix. Pega en `tasks.md`, bajo T1, los nombres de los tests que fallan y el resumen de `pnpm test`.
+9. Limpia entre tests: el DOM (`afterEach(() => document.body.replaceChildren())`), el storage y los mocks (`vi.restoreAllMocks()`, `vi.unstubAllGlobals()`).
 
 Ejemplo: `src/components/user-card.test.ts`.

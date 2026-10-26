@@ -126,6 +126,8 @@ Copilot redacta; tú decides. Estas son las señales de que hay que pedir que lo
 - Propone escribir su propia validación en lugar de usar `src/security/` (`safeUrl()`, `safeRedirectPath()`, `sanitizeHtml()`).
 - Relaja una allowlist, una regla de ESLint o la política de `pnpm-workspace.yaml` para que algo pase.
 - No incluye una tarea de test que reproduzca el ataque antes del fix.
+- Modifica `src/security/`, aunque sea para endurecerlo, sin demostrar con un test que el wrapper actual falla. Lo habitual es que el wrapper ya funcione y el fallo esté en el componente que no lo usa.
+- Lista ficheros sin citar el criterio del spec que los exige, o incluye cambios que pertenecen a otro hallazgo del mismo fichero.
 
 ## Si el `security-reviewer` bloquea
 

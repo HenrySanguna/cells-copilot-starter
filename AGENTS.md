@@ -28,6 +28,8 @@ Los comentarios HTML como este no se renderizan y apenas gastan tokens.
 - HTML no confiable → solo vía `renderSanitizedHtml()` / `sanitizeHtml()` de `src/security/sanitize.ts`.
 - URLs dinámicas → solo vía `safeUrl()` de `src/security/safe-url.ts`. Redirecciones desde parámetros → `safeRedirectPath()`.
 - No relajar `src/security/*` (allowlists, política de DOMPurify) sin un hallazgo que lo justifique y revisión de AppSec.
+- No modificar `src/security/*`, tampoco para endurecerlo, sin un test nuevo que falle con el código actual. Si los tests del wrapper ya cubren el payload, el fix va en el componente.
+- Cada fix se limita a su hallazgo: lo que pertenece a otro hallazgo (aunque esté en el mismo fichero) va en su propio spec.
 - No leer ni modificar: ficheros `.env*`, secretos, `.npmrc`, `.github/workflows/`. `pnpm-lock.yaml` y `pnpm-workspace.yaml` solo en tareas de dependencias.
   <!-- Por qué está escrito aquí: la exclusión de contenido que configura el admin NO se respeta en modo Agent del IDE. -->
 - Nunca copies el valor de un secreto encontrado en código a chats, specs, commits ni PR: cita solo fichero y línea.
