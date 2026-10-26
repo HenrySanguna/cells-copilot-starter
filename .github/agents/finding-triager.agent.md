@@ -3,9 +3,9 @@ name: finding-triager
 description: Clasifica un informe de seguridad (SAST, pentest, Dependabot, auditoría) en hallazgos accionables con ID, severidad y descartes razonados, sin editar código
 tools: ['read', 'search', 'vscode/askQuestions']
 handoffs:
-  - label: Planificar el hallazgo
+  - label: Planificar el hallazgo (con su spec ya creado)
     agent: security-planner
-    prompt: Planifica el hallazgo <ID> a partir de specs/<ID>/spec.md.
+    prompt: Planifica el hallazgo <ID> a partir de specs/<ID>/spec.md. Si no existe, para y pide crearlo con /security-spec.
     send: false
   - label: Auditar la dependencia
     agent: dependency-auditor

@@ -11,7 +11,7 @@ Rellena `.github/pull_request_template.md` con:
 4. **Tests**: nombre de cada test, payloads cubiertos y confirmación de que fallaban antes del fix.
 5. **Evidencias**: salida resumida de `pnpm check` (lint, tests, build, audit).
 6. **Riesgo de regresión**: componentes afectados y cómo se ha comprobado que siguen funcionando.
-7. **Fuera de alcance / seguimiento**: lo que queda pendiente (p. ej. cambios de backend o de hosting).
+7. **Fuera de alcance / seguimiento**: lo que queda pendiente (p. ej. cambios de backend o de hosting) y la tabla "Hallazgos derivados" del revisor.
 
 Título: `fix(security): <ID> <resumen>` o `fix(deps): <ID> <paquete> <versión>`.
 Nunca incluyas secretos, tokens ni datos personales reales.
